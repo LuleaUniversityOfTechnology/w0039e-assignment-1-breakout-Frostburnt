@@ -5,5 +5,6 @@ const int DISPLAY_SCALE = 2;
 const float ballSpeed = 6.0f;
 
 enum ObjectType{
-	TYPE_BALL
+	TYPE_BALL,
+	TYPE_BRICK
 };
