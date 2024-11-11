@@ -13,7 +13,7 @@ bool MainGameUpdate( float elapsedTime )
 {
 	Play::ClearDrawingBuffer( Play::cBlack );
 	//Play::DrawDebugText( { DISPLAY_WIDTH / 2, DISPLAY_HEIGHT / 2 }, "Hello World!" );	
-	StepFrame();
+	StepFrame(/*elapsedTime*/);
 
 	Play::PresentDrawingBuffer();
 	return Play::KeyDown( Play::KEY_ESCAPE );
