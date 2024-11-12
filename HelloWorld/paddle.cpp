@@ -13,7 +13,7 @@ void DrawPaddle(const Paddle& paddle) {
 	Play::Vector2D tr = { paddle.pos.x + paddleLen, paddle.pos.y + paddleHeight };
 	Play::DrawRect(bl, tr, Play::cBlue, true);
 }
-//sets the paddle origin point to it's self, or the edge of the window 
+//sets the paddle origin point to it's self + paddle speed when a key is pressed down, or the edge of the window 
 void UpdatePaddle(Paddle& paddle) {
 
 	paddle.pos.x = Max((paddle.pos.x - paddleSpeed * (Play::KeyDown(Play::KEY_LEFT))), 0.0f);

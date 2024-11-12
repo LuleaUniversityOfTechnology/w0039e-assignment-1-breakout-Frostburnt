@@ -10,9 +10,9 @@ void SpawnBall() {
 	GameObject& ball = Play::GetGameObject(objectId);
 	ball.velocity = normalize({ 1, -1 }) * ballSpeed;
 };
-//SetupScene spawns bricks row by row
+//SetupScene spawns bricks row by row, and also sets the origin point for sprites
 void SetupScene(int numrows) {
-	Play::CentreSpriteOrigin("brick");
+	Play::CentreSpriteOrigin("brick"); //for more accurate collisions, the hitbox should be in the center
 	Play::CentreSpriteOrigin("ball");
 	for (int i = 31; i < DISPLAY_WIDTH - 16; i += 17) {
 		for (int j = 1; j <= numrows; j++) { 
@@ -24,7 +24,8 @@ void SetupScene(int numrows) {
 
 //Step Frame, for each frame we take another step in the simulation
 //loop through all the balls, update thier position, then render them
-void StepFrame(Paddle & paddle) {
+//we pass the paddle in here so we can add it to the collision check for balls
+void StepFrame(Paddle& paddle) {
 	const std::vector<int> ballIds = Play::CollectGameObjectIDsByType(TYPE_BALL);
 	const std::vector<int> brickIds = Play::CollectGameObjectIDsByType(TYPE_BRICK);
 	for (int objectId : ballIds){						//works like a python for loop of "for object in vector"
@@ -33,31 +34,29 @@ void StepFrame(Paddle & paddle) {
 		//ball.velocity.x *= 0.7f;  //used to test y axis clipping
 		
 		Play::UpdateGameObject(ball);
-		//checks window borders below
+		// if ball hits window edges it will swap across the approprate axis
 		if (ball.pos.x > DISPLAY_WIDTH || ball.pos.x < 0) 
 			ball.velocity.x *=  - 1;
 		if (ball.pos.y > DISPLAY_HEIGHT || ball.pos.y < 0)
 			ball.velocity.y *= -1;
+		//if ball hits paddle we swap which axis the ball is moving across
 		if (IsColliding(paddle, ball))
 			ball.velocity.y *= -1;
 		//checks if colliding with bricks below
+	
 		for (int objectId : brickIds) {
 			GameObject& brick = Play::GetGameObject(objectId);
-			//we flip the balls velocity  on one axis depending on which quadrant the ball is in relative to the brick
+			
 			if (Play::IsColliding(brick, ball)) {
-				Play::Vector2D diffball = ball.pos - brick.pos;
-				if (abs(diffball.x) - 2 > abs(diffball.y)) //the -2 is to take into account for the improperly shaped hitbox
-					ball.velocity.x *= -1;
+				Play::Vector2D diffball = ball.pos - brick.pos;			//the x and y components of a vector between brick and ball can be used to determine where the ball is approaching from
+				if (abs(diffball.x) - 2 > abs(diffball.y))				//the -2 is to take into account for the round hitbox, not 100% accurate still, but cheaper than sprite collisions
+					ball.velocity.x *= -1;								// we flip the balls velocity  on one axis depending on which quadrant the ball is in relative to the brick
 				else
 					ball.velocity.y *= -1;
 	
 				Play::DestroyGameObject(objectId);
 			}
-			
-		
-
 		}
-
 		Play::DrawObject(ball); 
 	}
 	
