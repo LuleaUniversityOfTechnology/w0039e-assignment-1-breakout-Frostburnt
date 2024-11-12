@@ -1,6 +1,6 @@
 #include "game.h"
-
-
+#include "paddle.h"
+Paddle paddle;
 // The entry point for a PlayBuffer program
 void MainGameEntry( PLAY_IGNORE_COMMAND_LINE )
 {
@@ -15,7 +15,7 @@ bool MainGameUpdate( float elapsedTime )
 	Play::ClearDrawingBuffer( Play::cBlack );
 	//Play::DrawDebugText( { DISPLAY_WIDTH / 2, DISPLAY_HEIGHT / 2 }, "Hello World!" );	
 	StepFrame(/*elapsedTime*/);
-
+	DrawPaddle(paddle);
 	Play::PresentDrawingBuffer();
 	return Play::KeyDown( Play::KEY_ESCAPE );
 

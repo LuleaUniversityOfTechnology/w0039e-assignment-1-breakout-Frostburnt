@@ -41,7 +41,7 @@ void StepFrame(/*float timex*/) {
 			//we flip the balls velocity  on one axis depending on which quadrant the ball is in relative to the brick
 			if (Play::IsColliding(brick, ball)) {
 				Play::Vector2D diffball = ball.pos - brick.pos;
-				if (abs(diffball.x) > abs(diffball.y))
+				if (abs(diffball.x) - 2 > abs(diffball.y)) //the -2 is to take into account for the improperly shaped hitbox
 					ball.velocity.x *= -1;
 				else
 					ball.velocity.y *= -1;
