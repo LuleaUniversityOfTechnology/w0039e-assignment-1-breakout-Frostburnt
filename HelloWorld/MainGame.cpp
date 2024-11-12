@@ -14,8 +14,9 @@ bool MainGameUpdate( float elapsedTime )
 {
 	Play::ClearDrawingBuffer( Play::cBlack );
 	//Play::DrawDebugText( { DISPLAY_WIDTH / 2, DISPLAY_HEIGHT / 2 }, "Hello World!" );	
-	StepFrame(/*elapsedTime*/);
+	StepFrame(paddle);
 	DrawPaddle(paddle);
+	UpdatePaddle(paddle);
 	Play::PresentDrawingBuffer();
 	return Play::KeyDown( Play::KEY_ESCAPE );
 
@@ -27,3 +28,4 @@ int MainGameExit( void )
 	Play::DestroyManager();
 	return PLAY_OK;
 }
+

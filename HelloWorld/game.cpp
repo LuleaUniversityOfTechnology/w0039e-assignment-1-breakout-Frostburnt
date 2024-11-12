@@ -3,6 +3,8 @@
 #include "Play.h"
 //#include "game.h"
 #include "constants.h"
+#include "paddle.h"
+
 void SpawnBall() {
 	const int objectId = Play::CreateGameObject(ObjectType::TYPE_BALL, { DISPLAY_WIDTH / 2, DISPLAY_HEIGHT - 60 }, 4, "ball");
 	GameObject& ball = Play::GetGameObject(objectId);
@@ -12,16 +14,17 @@ void SpawnBall() {
 void SetupScene(int numrows) {
 	Play::CentreSpriteOrigin("brick");
 	Play::CentreSpriteOrigin("ball");
-	for (int i = 16; i < DISPLAY_WIDTH; i += 16) {
+	for (int i = 31; i < DISPLAY_WIDTH - 16; i += 17) {
 		for (int j = 1; j <= numrows; j++) { 
-			Play::CreateGameObject(ObjectType::TYPE_BRICK, { i, DISPLAY_HEIGHT - 16 * j }, 7, "brick");
+			Play::CreateGameObject(ObjectType::TYPE_BRICK, { i, DISPLAY_HEIGHT - 16 - 11 * j }, 7, "brick");
 	}
 			}
 
 }
+
 //Step Frame, for each frame we take another step in the simulation
 //loop through all the balls, update thier position, then render them
-void StepFrame(/*float timex*/) {
+void StepFrame(Paddle & paddle) {
 	const std::vector<int> ballIds = Play::CollectGameObjectIDsByType(TYPE_BALL);
 	const std::vector<int> brickIds = Play::CollectGameObjectIDsByType(TYPE_BRICK);
 	for (int objectId : ballIds){						//works like a python for loop of "for object in vector"
@@ -34,6 +37,8 @@ void StepFrame(/*float timex*/) {
 		if (ball.pos.x > DISPLAY_WIDTH || ball.pos.x < 0) 
 			ball.velocity.x *=  - 1;
 		if (ball.pos.y > DISPLAY_HEIGHT || ball.pos.y < 0)
+			ball.velocity.y *= -1;
+		if (IsColliding(paddle, ball))
 			ball.velocity.y *= -1;
 		//checks if colliding with bricks below
 		for (int objectId : brickIds) {
@@ -48,7 +53,8 @@ void StepFrame(/*float timex*/) {
 	
 				Play::DestroyGameObject(objectId);
 			}
-
+			
+		
 
 		}
 
