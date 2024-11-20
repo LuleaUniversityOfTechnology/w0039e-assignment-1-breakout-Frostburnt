@@ -4,7 +4,7 @@
 #include "Play.h"
 
 struct Paddle {
-	Play::Vector2D pos = { DISPLAY_WIDTH / 2, 32 };
+	Play::Vector2D pos = { DISPLAY_WIDTH / 2, 16};
 };
 
 void DrawPaddle(const Paddle& paddle);

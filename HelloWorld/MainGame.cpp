@@ -5,7 +5,7 @@ Paddle paddle;
 void MainGameEntry( PLAY_IGNORE_COMMAND_LINE )
 {
 	Play::CreateManager( DISPLAY_WIDTH, DISPLAY_HEIGHT, DISPLAY_SCALE );
-	SetupScene(3);
+	SetupScene(7);
 	SpawnBall();
 }
 

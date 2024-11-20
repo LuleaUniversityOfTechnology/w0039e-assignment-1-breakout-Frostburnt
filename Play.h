@@ -4699,7 +4699,11 @@ namespace Play
 	{
 		Play::Graphics::DrawDebugString( TRANSFORM_SPACE( pos ), text, { c.red * 2.55f, c.green * 2.55f, c.blue * 2.55f }, centred );
 	}
-
+	//added an overload for pringing using strings instead of character arrays
+	void DrawDebugText(Point2D pos, std::string text, Colour c, bool centred)
+	{
+		Play::Graphics::DrawDebugString(TRANSFORM_SPACE(pos), text, { c.red * 2.55f, c.green * 2.55f, c.blue * 2.55f }, centred);
+	}
 	void PresentDrawingBuffer()
 	{
 		static bool debugInfo = false;
