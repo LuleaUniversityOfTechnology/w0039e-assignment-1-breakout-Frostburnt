@@ -6,3 +6,5 @@
 void SetupScene(int numrows);
 void SpawnBall();
 void StepFrame(Paddle& paddle);
+void savescores();//saves scores to file
+void loadscores();

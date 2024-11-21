@@ -4,6 +4,7 @@
 //#include "game.h"
 #include "constants.h"
 #include "paddle.h"
+#include <fstream>
 
 unsigned int currentscore = 0;
 //this should be moved to a seperate cpp/h file later
@@ -27,13 +28,9 @@ class ArrayOfUints {								//Basically an array for unsigned intergers
 				}
 				delete[] data;
 				data = newData;
-				
-		
 			}       
 			data[size - 1] = value;								// this will put data in the last index
 			sort();
-			
-			
 		}
 		
 		unsigned int& operator[](unsigned int index) {			
@@ -44,8 +41,11 @@ class ArrayOfUints {								//Basically an array for unsigned intergers
 				return x;
 			}
 		}
-		int how_long() {
+		int length() {
 			return size;
+		}
+		unsigned int * get_data() {
+			return data;
 		}
 private:
 
@@ -71,7 +71,25 @@ private:
 ArrayOfUints myScore;
 
 
+void savescores() {//called on game exiting
+	ofstream myfile("scores.txt", fstream::out);
+	for (int i = 0; i < myScore.length(); i++) {
+		if (myfile.is_open()) {
+			myfile << myScore[i] << std::endl;
+		}
+	}
+}
+void loadscores() {//called on game starting
+	ifstream myfile("scores.txt", fstream::in);
+	string line;
+	if (myfile.is_open()) {
+		while (getline(myfile, line)) {
+			myScore.sort_back(stoul(line));
 
+		}
+	}
+
+}
 void SpawnBall(){
 	const int objectId = Play::CreateGameObject(ObjectType::TYPE_BALL, { DISPLAY_WIDTH / 2, DISPLAY_HEIGHT - 160 }, 4, "ball");
 	GameObject& ball = Play::GetGameObject(objectId);
