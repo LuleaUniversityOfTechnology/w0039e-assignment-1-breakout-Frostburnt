@@ -5,29 +5,74 @@
 #include "constants.h"
 #include "paddle.h"
 
-unsigned int top5[5] = { 10, 5, 4 ,4, 3 };
 unsigned int currentscore = 0;
-
-struct myscores {
-	int capacity = 5;
-	int size = 5;
-	unsigned int scores[5] = {};
-	void update() {
-		for (unsigned int i = 0, comparitor = currentscore, buffer; i < size; i++) {
-			if (comparitor > scores[i]) {
-				buffer = scores[i];
-				scores[i] = comparitor;
-				comparitor = buffer;
-			}
-
+//this should be moved to a seperate cpp/h file later
+class ArrayOfUints {								//Basically an array for unsigned intergers
+	public:
+		
+		ArrayOfUints() {
+			data = new unsigned int[capacity];
+		}	
+		~ArrayOfUints() {
+			delete[] data;
 		}
+		void sort_back(unsigned int value) {	//sorted push_back essentially
+			size++;
+					
+			if (size >= capacity) {
+				capacity = capacity * 2;
+				unsigned int* newData = new unsigned int[capacity];
+				for (int i = 0; i < size - 1; i++) {
+					newData[i] = data[i];					
+				}
+				delete[] data;
+				data = newData;
+				
+		
+			}       
+			data[size - 1] = value;								// this will put data in the last index
+			sort();
+			
+			
+		}
+		
+		unsigned int& operator[](unsigned int index) {			
+			if (index < size)
+				return data[index];
+			else{						//when an index contains data that should not be read will always return 0
+				unsigned int x = 0;
+				return x;
+			}
+		}
+		int how_long() {
+			return size;
+		}
+private:
+
+	int size = 0;
+	int capacity = 5;
+	unsigned int* data;
+	
+	void inline sort() {								//this function is used to sort the last item in an array
+		unsigned int buffer;							//it is essentially the nested portion of the bubble sort algorythm
+		for (int i = size - 1; i > 0; i--)				//it's only one item I need to find a place for, the rest of the data is already sorted,
+			if (data[i] > data[i - 1]) {				// so it'll be O(n) instead of O(n^2) number of loops.
+				buffer = data[i];
+				data[i] = data[i - 1];
+				data[i - 1] = buffer;
+			}
+			else										//if index is not bigger that the one above it, we are done
+				break;
+
 	}
 };
 
 
+ArrayOfUints myScore;
 
 
-void SpawnBall() {
+
+void SpawnBall(){
 	const int objectId = Play::CreateGameObject(ObjectType::TYPE_BALL, { DISPLAY_WIDTH / 2, DISPLAY_HEIGHT - 160 }, 4, "ball");
 	GameObject& ball = Play::GetGameObject(objectId);
 	ball.velocity = normalize({ 1, -1 }) * ballSpeed;
@@ -47,13 +92,8 @@ void ResetScene() {
 	Play::DestroyGameObjectsByType(1);
 	Play::DestroyGameObjectsByType(2);
 	SetupScene(7);
-	for (unsigned int i = 0, comparitor = currentscore, buffer; i < 5; i++){
-		if (comparitor > top5[i]){
-			buffer = top5[i];
-			top5[i] = comparitor;
-			comparitor = buffer;
-		}
-	}
+	myScore.sort_back(currentscore);
+	//myScore.sort();
 		
 	currentscore = 0;
 	SpawnBall();
@@ -114,7 +154,7 @@ void StepFrame(Paddle& paddle) {
 	Play::DrawDebugText({ 64, 16 }, std::to_string(currentscore), Play::cGrey, 0);
 	for (int i = 0; i < 5; i++) {
 
-		Play::DrawDebugText({ DISPLAY_WIDTH - 64, 112 - 16 * i }, std::to_string(top5[i]), Play::cGrey, 0); //added an overload in the playbuffer library, so that it can take std::string and not just char array
+		Play::DrawDebugText({ DISPLAY_WIDTH - 64, 112 - 16 * i }, std::to_string(myScore[i]), Play::cGrey, 0); //added an overload in the playbuffer library, so that it can take std::string and not just char array
 	}
 
 }
