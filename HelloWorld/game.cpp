@@ -4,72 +4,10 @@
 //#include "game.h"
 #include "constants.h"
 #include "paddle.h"
-#include <fstream>
+#include "MyTypes.h"
 
 unsigned int currentscore = 0;
-//this should be moved to a seperate cpp/h file later
-class ArrayOfUints {								//Basically an array for unsigned intergers
-	public:
-		
-		ArrayOfUints() {
-			data = new unsigned int[capacity];
-		}	
-		~ArrayOfUints() {
-			delete[] data;
-		}
-		void sort_back(unsigned int value) {	//sorted push_back essentially
-			size++;
-					
-			if (size >= capacity) {
-				capacity = capacity * 2;
-				unsigned int* newData = new unsigned int[capacity];
-				for (int i = 0; i < size - 1; i++) {
-					newData[i] = data[i];					
-				}
-				delete[] data;
-				data = newData;
-			}       
-			data[size - 1] = value;								// this will put data in the last index
-			sort();
-		}
-		
-		unsigned int& operator[](unsigned int index) {			
-			if (index < size)
-				return data[index];
-			else{						//when an index contains data that should not be read will always return 0
-				unsigned int x = 0;
-				return x;
-			}
-		}
-		int length() {
-			return size;
-		}
-		unsigned int * get_data() {
-			return data;
-		}
-private:
-
-	int size = 0;
-	int capacity = 5;
-	unsigned int* data;
-	
-	void inline sort() {								//this function is used to sort the last item in an array
-		unsigned int buffer;							//it is essentially the nested portion of the bubble sort algorythm
-		for (int i = size - 1; i > 0; i--)				//it's only one item I need to find a place for, the rest of the data is already sorted,
-			if (data[i] > data[i - 1]) {				// so it'll be O(n) instead of O(n^2) number of loops.
-				buffer = data[i];
-				data[i] = data[i - 1];
-				data[i - 1] = buffer;
-			}
-			else										//if index is not bigger that the one above it, we are done
-				break;
-
-	}
-};
-
-
 ArrayOfUints myScore;
-
 
 void savescores() {//called on game exiting
 	ofstream myfile("scores.txt", fstream::out);
@@ -90,6 +28,7 @@ void loadscores() {//called on game starting
 	}
 
 }
+
 void SpawnBall(){
 	const int objectId = Play::CreateGameObject(ObjectType::TYPE_BALL, { DISPLAY_WIDTH / 2, DISPLAY_HEIGHT - 160 }, 4, "ball");
 	GameObject& ball = Play::GetGameObject(objectId);
