@@ -350,3 +350,4 @@ MigrationBackup/
 .ionide/
 GetLatest.bat
 /HelloWorld/ScoreSystem.cpp
+/HelloWorld/scores.txt
