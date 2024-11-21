@@ -6,6 +6,26 @@
 #include "paddle.h"
 
 unsigned int top5[5] = { 10, 5, 4 ,4, 3 };
+unsigned int currentscore = 0;
+
+struct myscores {
+	int capacity = 5;
+	int size = 5;
+	unsigned int scores[5] = {};
+	void update() {
+		for (unsigned int i = 0, comparitor = currentscore, buffer; i < size; i++) {
+			if (comparitor > scores[i]) {
+				buffer = scores[i];
+				scores[i] = comparitor;
+				comparitor = buffer;
+			}
+
+		}
+	}
+};
+
+
+
 
 void SpawnBall() {
 	const int objectId = Play::CreateGameObject(ObjectType::TYPE_BALL, { DISPLAY_WIDTH / 2, DISPLAY_HEIGHT - 160 }, 4, "ball");
@@ -23,11 +43,11 @@ void SetupScene(int numrows) {
 	}
 
 }
-void ResetScene(unsigned int* currentscore) {
+void ResetScene() {
 	Play::DestroyGameObjectsByType(1);
 	Play::DestroyGameObjectsByType(2);
 	SetupScene(7);
-	for (unsigned int i = 0, comparitor = *currentscore, buffer; i < 5; i++){
+	for (unsigned int i = 0, comparitor = currentscore, buffer; i < 5; i++){
 		if (comparitor > top5[i]){
 			buffer = top5[i];
 			top5[i] = comparitor;
@@ -35,14 +55,14 @@ void ResetScene(unsigned int* currentscore) {
 		}
 	}
 		
-	*currentscore = 0;
+	currentscore = 0;
 	SpawnBall();
 }
 
 //Step Frame, for each frame we take another step in the simulation
 //loop through all the balls, update thier position, then render them
 //we pass the paddle in here so we can add it to the collision check for balls
-void StepFrame(Paddle& paddle, unsigned int *currentscore) {
+void StepFrame(Paddle& paddle) {
 	const std::vector<int> ballIds = Play::CollectGameObjectIDsByType(TYPE_BALL);
 	const std::vector<int> brickIds = Play::CollectGameObjectIDsByType(TYPE_BRICK);
 	for (int objectId : ballIds) {						//works like a python for loop of "for object in vector"
@@ -58,7 +78,7 @@ void StepFrame(Paddle& paddle, unsigned int *currentscore) {
 			ball.velocity.y *= -1;
 		if (ball.pos.y < 0){
 			if (ballIds.size() == 1){			//if this is the last ball, we reset the scene. This will delete all game objects, and call setupscene, reset our score, etc
-				ResetScene(currentscore);
+				ResetScene();
 				//SpawnBall();
 				//break;
 			}
@@ -78,7 +98,7 @@ void StepFrame(Paddle& paddle, unsigned int *currentscore) {
 					ball.velocity.y *= -1;
 
 				Play::DestroyGameObject(objectId);
-				*currentscore = *currentscore + 1;
+				currentscore = currentscore + 1;
 			}
 		}
 	
@@ -91,7 +111,7 @@ void StepFrame(Paddle& paddle, unsigned int *currentscore) {
 		GameObject& brick  = Play::GetGameObject(objectId);
 		Play::DrawObject(brick);
 	}
-	Play::DrawDebugText({ 64, 16 }, std::to_string(*currentscore), Play::cGrey, 0);
+	Play::DrawDebugText({ 64, 16 }, std::to_string(currentscore), Play::cGrey, 0);
 	for (int i = 0; i < 5; i++) {
 
 		Play::DrawDebugText({ DISPLAY_WIDTH - 64, 112 - 16 * i }, std::to_string(top5[i]), Play::cGrey, 0); //added an overload in the playbuffer library, so that it can take std::string and not just char array

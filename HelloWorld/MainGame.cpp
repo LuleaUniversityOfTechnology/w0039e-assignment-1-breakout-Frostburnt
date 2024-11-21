@@ -2,8 +2,8 @@
 #include "paddle.h"
 #include <fstream>
 Paddle paddle;
-DynArray highscores;
-unsigned int score = 0;
+//DynArray highscores;
+//unsigned int score = 0;
 // The entry point for a PlayBuffer program
 void FileToArray() {
 	std::fstream file("Highscores.txt");
@@ -36,7 +36,7 @@ bool MainGameUpdate( float elapsedTime )
 	
 	Play::ClearDrawingBuffer( Play::cBlack );
 	//Play::DrawDebugText( { DISPLAY_WIDTH / 2, DISPLAY_HEIGHT / 2 }, "Hello World!" );	
-	StepFrame(paddle,  &score);
+	StepFrame(paddle);
 	DrawPaddle(paddle);
 	UpdatePaddle(paddle);
 	Play::PresentDrawingBuffer();
