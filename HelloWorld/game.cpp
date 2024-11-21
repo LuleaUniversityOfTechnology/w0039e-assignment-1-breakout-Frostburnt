@@ -4,16 +4,6 @@
 //#include "game.h"
 #include "constants.h"
 #include "paddle.h"
-//struct DynArray {};
-//class StackArray {
-//	unsigned int size;
-//	int values[5];
-//	int test(){
-//		for (int i : values) {
-//			i = 1;
-//		}
-//	}
-//};
 
 unsigned int top5[5] = { 10, 5, 4 ,4, 3 };
 
@@ -103,8 +93,8 @@ void StepFrame(Paddle& paddle, unsigned int *currentscore) {
 	}
 	Play::DrawDebugText({ 64, 16 }, std::to_string(*currentscore), Play::cGrey, 0);
 	for (int i = 0; i < 5; i++) {
-		std::string cat = std::to_string(top5[i]);
-		Play::DrawDebugText({ DISPLAY_WIDTH - 64, 16 * (i + 2) },cat , Play::cGrey, 0); //added an overload in the playbuffer library, so that it can take std::string and not just char array
+
+		Play::DrawDebugText({ DISPLAY_WIDTH - 64, 112 - 16 * i }, std::to_string(top5[i]), Play::cGrey, 0); //added an overload in the playbuffer library, so that it can take std::string and not just char array
 	}
 
 }
